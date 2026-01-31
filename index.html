@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TatoJob - Piattaforma intelligente per la ricerca di lavoro in Italia. Cerca annunci, analizza statistiche e trova il lavoro perfetto per te.">
+  <meta name="keywords" content="lavoro, annunci, ricerca lavoro, job search, italia, adzuna">
+  <meta name="author" content="TatoJob">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tatosolvi.github.io/tatoJob/">
+  <meta property="og:title" content="TatoJob - Ricerca Lavoro Intelligente">
+  <meta property="og:description" content="Piattaforma intelligente per la ricerca di lavoro in Italia">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://tatosolvi.github.io/tatoJob/">
+  <meta property="twitter:title" content="TatoJob - Ricerca Lavoro Intelligente">
+  <meta property="twitter:description" content="Piattaforma intelligente per la ricerca di lavoro in Italia">
+  
+  <title>TatoJob - Ricerca Lavoro Intelligente</title>
+  
+  <style>
+    /* Copia tutti gli stili da TEST-ADZUNA-API.html */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1f6f63 0%, #2a8f7f 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .search-section {
+      padding: 30px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: #666;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: #1f6f63;
+      color: #1f6f63;
+    }
+
+    .tab-btn:hover {
+      color: #1f6f63;
+    }
+
+    .search-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #1f6f63;
+    }
+
+    .btn-search {
+      background: linear-gradient(135deg, #1f6f63 0%, #2a8f7f 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+      grid-column: 1 / -1;
+    }
+
+    .btn-search:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-search:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .results-section {
+      padding: 30px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .results-count {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .job-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .job-card h3 {
+      color: #1f6f63;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .job-snippet {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .job-link {
+      display: inline-block;
+      background: #1f6f63;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .job-link:hover {
+      background: #2a8f7f;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #c33;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .search-form {
+        grid-template-columns: 1fr;
+      }
+
+      .jobs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .tab-btn {
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎯 TatoJob</h1>
+      <p>Ricerca Lavoro Intelligente in Italia</p>
+    </header>
+
+    <div class="search-section">
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" id="tabSearch" onclick="switchTab('search')">
+          🔍 Cerca Annunci
+        </button>
+        <button class="tab-btn" id="tabStats" onclick="switchTab('stats')">
+          📊 Statistiche Lavoro
+        </button>
+      </div>
+
+      <!-- Form Ricerca -->
+      <form class="search-form" id="searchForm" style="display: block;">
+        <div class="form-group">
+          <label for="keyword">🔑 Parola Chiave</label>
+          <input type="text" id="keyword" placeholder="Es: developer, marketing" required>
+        </div>
+        <div class="form-group">
+          <label for="location">📍 Località</label>
+          <input type="text" id="location" placeholder="Es: Milano, Roma">
+        </div>
+        <button type="submit" class="btn-search">Cerca</button>
+      </form>
+
+      <!-- Form Statistiche -->
+      <form class="search-form" id="statsForm" style="display: none;">
+        <div class="form-group">
+          <label for="statsKeyword">🔑 Tipo di Lavoro</label>
+          <input type="text" id="statsKeyword" placeholder="Es: developer, marketing" required>
+        </div>
+        <div class="form-group">
+          <label for="statsLocation">📍 Località (opzionale)</label>
+          <input type="text" id="statsLocation" placeholder="Es: Milano, Roma">
+        </div>
+        <button type="submit" class="btn-search">📊 Vedi Statistiche</button>
+      </form>
+    </div>
+
+    <div class="results-section">
+      <div class="results-header">
+        <div class="results-count" id="resultsCount">Inserisci una ricerca per iniziare</div>
+      </div>
+      <div id="loading" class="loading" style="display: none;">Caricamento...</div>
+      <div id="error" class="error" style="display: none;"></div>
+      <div id="jobsContainer" class="jobs-grid"></div>
+      <div id="generalStatsContainer" style="display: none; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;"></div>
+    </div>
+  </div>
+
+  <script>
+    // Configurazione Backend (Vercel)
+    const BACKEND_URL = 'https://tatojob-backend.vercel.app'; // Cambia con il tuo URL Vercel
+    
+    // Funzione switch tab
+    function switchTab(tab) {
+      if (tab === 'search') {
+        document.getElementById('tabSearch').classList.add('active');
+        document.getElementById('tabStats').classList.remove('active');
+        document.getElementById('searchForm').style.display = 'block';
+        document.getElementById('statsForm').style.display = 'none';
+        document.getElementById('generalStatsContainer').style.display = 'none';
+        document.getElementById('jobsContainer').innerHTML = '';
+      } else {
+        document.getElementById('tabStats').classList.add('active');
+        document.getElementById('tabSearch').classList.remove('active');
+        document.getElementById('statsForm').style.display = 'block';
+        document.getElementById('searchForm').style.display = 'none';
+        document.getElementById('jobsContainer').innerHTML = '';
+      }
+    }
+
+    // Form ricerca
+    document.getElementById('searchForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const keyword = document.getElementById('keyword').value.trim();
+      const location = document.getElementById('location').value.trim();
+      
+      if (!keyword) {
+        alert('Inserisci una parola chiave');
+        return;
+      }
+
+      const loadingEl = document.getElementById('loading');
+      loadingEl.style.display = 'block';
+      loadingEl.textContent = '⏳ Caricamento annunci...';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('jobsContainer').innerHTML = '';
+      document.getElementById('searchForm').querySelector('.btn-search').disabled = true;
+
+      try {
+        const params = new URLSearchParams({ keyword });
+        if (location) params.append('location', location);
+        
+        const response = await fetch(`${BACKEND_URL}/api/search?${params.toString()}`);
+        const data = await response.json();
+
+        loadingEl.style.display = 'none';
+        document.getElementById('searchForm').querySelector('.btn-search').disabled = false;
+
+        if (data.success) {
+          displayJobs(data.results, data.count);
+        } else {
+          document.getElementById('error').style.display = 'block';
+          document.getElementById('error').textContent = `❌ Errore: ${data.error}`;
+        }
+      } catch (error) {
+        loadingEl.style.display = 'none';
+        document.getElementById('searchForm').querySelector('.btn-search').disabled = false;
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = `❌ Errore: ${error.message}`;
+      }
+    });
+
+    // Form statistiche
+    document.getElementById('statsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const keyword = document.getElementById('statsKeyword').value.trim();
+      const location = document.getElementById('statsLocation').value.trim();
+      
+      if (!keyword) {
+        alert('Inserisci un tipo di lavoro');
+        return;
+      }
+
+      const loadingEl = document.getElementById('loading');
+      loadingEl.style.display = 'block';
+      loadingEl.textContent = '📊 Calcolo statistiche...';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('generalStatsContainer').innerHTML = '';
+      document.getElementById('statsForm').querySelector('.btn-search').disabled = true;
+
+      try {
+        const params = new URLSearchParams({ keyword });
+        if (location) params.append('location', location);
+        
+        const response = await fetch(`${BACKEND_URL}/api/stats?${params.toString()}`);
+        const data = await response.json();
+
+        loadingEl.style.display = 'none';
+        document.getElementById('statsForm').querySelector('.btn-search').disabled = false;
+
+        if (data.success) {
+          displayGeneralStatistics(data);
+        } else {
+          document.getElementById('error').style.display = 'block';
+          document.getElementById('error').textContent = `❌ Errore: ${data.error}`;
+        }
+      } catch (error) {
+        loadingEl.style.display = 'none';
+        document.getElementById('statsForm').querySelector('.btn-search').disabled = false;
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = `❌ Errore: ${error.message}`;
+      }
+    });
+
+    function displayJobs(jobs, count) {
+      const container = document.getElementById('jobsContainer');
+      document.getElementById('resultsCount').textContent = `Trovati ${count} annunci`;
+      
+      if (jobs.length === 0) {
+        container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">Nessun annuncio trovato</p>';
+        return;
+      }
+
+      container.innerHTML = jobs.map(job => `
+        <div class="job-card">
+          <h3>${job.title}</h3>
+          <div class="job-meta">
+            <span>🏢 ${job.company}</span>
+            <span>📍 ${job.location.city}</span>
+            <span>💰 ${job.salary.displayed}</span>
+          </div>
+          <p class="job-snippet">${job.snippet}</p>
+          <a href="${job.url}" target="_blank" class="job-link">Vedi Annuncio →</a>
+        </div>
+      `).join('');
+    }
+
+    function displayGeneralStatistics(data) {
+      const container = document.getElementById('generalStatsContainer');
+      const stats = data.statistics;
+      
+      container.innerHTML = `
+        <h2 style="color: #1f6f63; margin-bottom: 20px;">📊 Statistiche: "${data.keyword}" ${data.location ? `a ${data.location}` : 'in Italia'}</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+          <div style="background: white; padding: 20px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">Totale Annunci</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #1f6f63;">${data.totalJobs.toLocaleString('it-IT')}</div>
+          </div>
+          <div style="background: white; padding: 20px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">Stipendio Medio</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #1f6f63;">
+              ${stats.salary.avg ? '€' + stats.salary.avg.toLocaleString('it-IT') : 'N/A'}
+            </div>
+          </div>
+          <div style="background: white; padding: 20px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">Lavori Remoti</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #1f6f63;">${stats.remoteJobs}</div>
+          </div>
+        </div>
+      `;
+      
+      container.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
+
